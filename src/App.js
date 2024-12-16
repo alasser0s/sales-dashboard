@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Fragment } from 'react';
+import { Menu, Transition } from '@headlessui/react';
 import {
   Bars3Icon,
   XMarkIcon,
@@ -14,6 +15,14 @@ import {
   ChatBubbleLeftIcon,
   SunIcon,
   MoonIcon,
+  BellIcon,
+  Cog6ToothIcon,
+  UserCircleIcon,
+  ArrowRightOnRectangleIcon,
+  KeyIcon,
+  PaintBrushIcon,
+  GlobeAltIcon,
+  BellAlertIcon,
 } from '@heroicons/react/24/outline';
 import DashboardStats from './components/DashboardStats';
 import SalesChart from './components/SalesChart';
@@ -53,8 +62,21 @@ const navigation = [
     name: 'Settings', 
     icon: CogIcon, 
     current: false,
-    children: [] 
+    children: [
+      { name: 'Account', icon: UserCircleIcon, description: 'Manage your account settings' },
+      { name: 'Security', icon: KeyIcon, description: 'Password and authentication' },
+      { name: 'Appearance', icon: PaintBrushIcon, description: 'Customize your dashboard' },
+      { name: 'Notifications', icon: BellAlertIcon, description: 'Configure alert preferences' },
+      { name: 'Language', icon: GlobeAltIcon, description: 'Change language and region' },
+    ]
   },
+];
+
+const userNavigation = [
+  { name: 'Your Profile', icon: UserCircleIcon, description: 'View and edit your profile' },
+  { name: 'Settings', icon: Cog6ToothIcon, description: 'Manage your preferences' },
+  { name: 'Notifications', icon: BellIcon, description: '3 unread notifications' },
+  { name: 'Sign out', icon: ArrowRightOnRectangleIcon, description: 'Log out of your account' },
 ];
 
 function classNames(...classes) {
@@ -206,13 +228,55 @@ function App() {
                   <span className="text-xs font-medium text-indigo-600 dark:text-indigo-200">3</span>
                 </div>
               </button>
-              <div className="relative">
-                <div className="flex items-center">
-                  <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center dark:bg-indigo-500">
+
+              {/* Profile dropdown */}
+              <Menu as="div" className="relative">
+                <Menu.Button className="flex rounded-full bg-indigo-600 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-500">
+                  <span className="sr-only">Open user menu</span>
+                  <div className="h-8 w-8 rounded-full flex items-center justify-center">
                     <span className="text-sm font-medium text-white">JD</span>
                   </div>
-                </div>
-              </div>
+                </Menu.Button>
+                <Transition
+                  as={Fragment}
+                  enter="transition ease-out duration-100"
+                  enterFrom="transform opacity-0 scale-95"
+                  enterTo="transform opacity-100 scale-100"
+                  leave="transition ease-in duration-75"
+                  leaveFrom="transform opacity-100 scale-100"
+                  leaveTo="transform opacity-0 scale-95"
+                >
+                  <Menu.Items className="absolute right-0 z-10 mt-2 w-72 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-800 dark:ring-gray-700">
+                    <div className="px-4 py-3">
+                      <p className="text-sm text-gray-700 dark:text-gray-300">Signed in as</p>
+                      <p className="truncate text-sm font-medium text-gray-900 dark:text-white">john.doe@example.com</p>
+                    </div>
+                    <div className="border-t border-gray-200 dark:border-gray-700">
+                      {userNavigation.map((item) => (
+                        <Menu.Item key={item.name}>
+                          {({ active }) => (
+                            <a
+                              href="#"
+                              className={classNames(
+                                active ? 'bg-gray-100 dark:bg-gray-700' : '',
+                                'block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
+                              )}
+                            >
+                              <div className="flex items-center">
+                                <item.icon className="mr-3 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                                <div>
+                                  <div className="font-medium">{item.name}</div>
+                                  <div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
+                                </div>
+                              </div>
+                            </a>
+                          )}
+                        </Menu.Item>
+                      ))}
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </Menu>
             </div>
           </div>
         </div>
